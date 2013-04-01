@@ -30,6 +30,7 @@
 				speed : 1000,
 				// class for item
 				itemClass:'bb-item',
+				// item show class
 				showClass:"show",
 				// easing for the flip transition
 				easing : 'ease-in-out',
@@ -86,7 +87,7 @@
 			// show first item
 			this.currentEl = this.itemsEl.item(this.current);
 
-			this.currentEl.classList.add("show");
+			this.currentEl.classList.add(this.options.showClass);
 
 			this.activeEl = this.currentEl;
 			// get width of this.$el
@@ -153,7 +154,7 @@
 
 			if (!event.target.classList.contains("bb-page")) return ;
 				
-			this.nextItemEl.classList.add("show");
+			this.nextItemEl.classList.add(this.options.showClass);
 			this.block.classList.remove('active');
 			this.activeEl = this.nextItemEl;
 			this.s_middle.removeAttribute('style');
@@ -176,7 +177,7 @@
 			this._endAnimation(event,dir);
 		}.bind(this));
 
-		this.activeEl.classList.remove("show");
+		this.activeEl.classList.remove(this.options.showClass);
 
 		this.block.classList.add('active');
 
@@ -188,7 +189,6 @@
 					style = dir === 'next' ? 'rotateY(-15deg)' : 'rotateY(-165deg)';
 				}
 				self.s_middle.style.webkitTransform = style ;
-				console.log(style);
 		}, 30);
 	},
 		// creates the necessary layout for the 3d animation, and triggers the transitions
@@ -265,26 +265,27 @@
 									'      </div>',
 									'    </div>',
 									'  </div>'];
-			var tmpNode = document.createElement("div");
-			tmpNode.classList.add("bb-block");
-			tmpNode.innerHTML = html.join("");
-			this.el.insertBefore(tmpNode,this.el.firstChild);
+			this.block = document.createElement("div");
+			this.block.classList.add("bb-block");
+			this.block.innerHTML = html.join("");
+			this.el.insertBefore(this.block,this.el.firstChild);
+
+			this.block.style.webkitPerspective = this.options.perspective;
 
 			// basic structure:
 			// 1 element for the left side.
-			this.s_left = this.el.querySelector('.bb-left .bb-inner'); // 1 element for the flipping/middle page
+			this.s_left = this.block.querySelector(".bb-left .bb-inner"); // 1 element for the flipping/middle page
 			
-			this.s_middle = this.el.querySelector('.bb-middle');
-			var middle_inner = this.s_middle.getElementsByClassName('bb-inner');
+			this.s_middle = this.block.querySelector(".bb-middle");
+			var middle_inner = this.s_middle.getElementsByClassName("bb-inner");
 			this.s_middle_left = middle_inner[0];
 			this.s_middle_right = middle_inner[1];
 
 			// 1 element for the right side
-			this.s_right = this.el.querySelector('.bb-right .bb-inner');
+			this.s_right = this.block.querySelector(".bb-right .bb-inner");
 
 
-			this.block = this.el.querySelector('.bb-block');
-			this.block.style.webkitPerspective = this.options.perspective;
+
 		},
 		// public method: flips next
 		next: function() {
